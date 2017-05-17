@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1= title
+  each typeName, type in types
+    h2= typeName
+    a(href='/' + type + 's/csv') Uafhængigt af tags
+    ul
+      each tag in tags
+        li
+          a(href='/' + type + 's/csv/' + tag)= tag
