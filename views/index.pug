@@ -2,10 +2,12 @@ extends layout
 
 block content
   h1= title
-  each typeName, type in types
-    h2= typeName
-    a(href='/' + type + 's/csv') Uafhængigt af tags
-    ul
-      each tag in tags
+  h2 Eksportér til komma separerede værdier (CSV)
+    each typeName, type in types
+      h3= typeName
+      ul
         li
-          a(href='/' + type + 's/csv/' + tag)= tag
+          a(href='/' + type + 's/csv') Alle
+        each tag in tags
+          li
+            a(href='/' + type + 's/csv/' + tag)= 'Tagget med "' + tag + '"'
