@@ -55,7 +55,6 @@ module.exports = type => {
           filename += '-' + tag;
         }
         filename += '.csv';
-        console.log(filename);
         res.set({
           'Content-Disposition': 'attachment; filename="' + filename + '"',
           'Content-Type': 'text/csv'
@@ -63,7 +62,7 @@ module.exports = type => {
         res.send(json2csv({
           fields: Object.keys(mapping),
           data: docs
-        }));
+        }).toString('utf16le'));
       });
     });
   } else {
