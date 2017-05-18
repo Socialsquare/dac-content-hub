@@ -4,6 +4,7 @@ const express = require('express');
 const json2csv = require('json2csv');
 const path = require('path');
 const Prismic = require('prismic.io');
+const Iconv  = require('iconv').Iconv;
 
 function flatten(doc, mapping) {
   const result = {};
@@ -31,7 +32,7 @@ module.exports = type => {
       if(tag && tags.indexOf(tag) === -1) {
         throw new Error('The tag `' + tag + '` is not used in the content hub');
       }
-      const encoding = req.query.encoding || 'utf8';
+      const encoding = req.query.encoding || 'utf-8';
       // Build up the query
       const prismic = res.app.locals.prismic;
       const predicates = [
@@ -60,12 +61,17 @@ module.exports = type => {
           fields: Object.keys(mapping),
           data: docs
         });
-        const csvBuffer = Buffer.from(csv).toString(encoding);
+
+        // Initialize an iconv to the desired encoding
+        const iconv = new Iconv('utf-8', encoding);
         res.set({
           'Content-Disposition': 'attachment; filename="' + filename + '"',
           'Content-Type': 'text/csv'
         });
-        res.send(csvBuffer);
+        // Send the buffer through conversion and to the response
+        const encoded = iconv.convert(csv);
+        // Send the encoded csv
+        res.send(encoded);
       }).then(null, next);
     });
   } else {
