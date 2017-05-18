@@ -31,6 +31,7 @@ module.exports = type => {
       if(tag && tags.indexOf(tag) === -1) {
         throw new Error('The tag `' + tag + '` is not used in the content hub');
       }
+      const encoding = req.query.encoding || 'utf8';
       // Build up the query
       const prismic = res.app.locals.prismic;
       const predicates = [
@@ -55,15 +56,17 @@ module.exports = type => {
           filename += '-' + tag;
         }
         filename += '.csv';
+        const csv = json2csv({
+          fields: Object.keys(mapping),
+          data: docs
+        });
+        const csvBuffer = Buffer.from(csv).toString(encoding);
         res.set({
           'Content-Disposition': 'attachment; filename="' + filename + '"',
           'Content-Type': 'text/csv'
         });
-        res.send(json2csv({
-          fields: Object.keys(mapping),
-          data: docs
-        }).toString('utf16le'));
-      });
+        res.send(csvBuffer);
+      }).then(null, next);
     });
   } else {
     console.warn('Missing the CSV mapping for ' + type);
