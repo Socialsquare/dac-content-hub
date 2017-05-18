@@ -8,6 +8,10 @@ block content
       ul
         li
           a(href='/' + type + 's/csv') Alle
+          | 
+          a(href='/' + type + 's/csv?encoding=utf-16be') (utf-16be)
         each tag in tags
           li
             a(href='/' + type + 's/csv/' + tag)= 'Tagget med "' + tag + '"'
+            | 
+            a(href='/' + type + 's/csv/' + tag + '?encoding=utf-16be') (utf-16be)
